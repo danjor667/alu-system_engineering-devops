@@ -1,8 +1,12 @@
 #config for connection withou password
 
-file {'/home/jordan/.ssh/config':
+file {'/etc/ssh/ssh_config':
 	ensure  => present,
-	content => 'Host*
-	IdentityFile ~/.ssh/school
-	PasswordAuthentication no',
+	content => 'Include /etc/ssh/ssh_config.d/*.conf 
+	Host*
+		SendEnv LANG LC_*
+		HashKnownHosts yes
+		GSSAPIAuthentication yes
+		IdentityFile ~/.ssh/school
+		PasswordAuthentication no',
 }	
