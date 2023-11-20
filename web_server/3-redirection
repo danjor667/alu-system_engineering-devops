@@ -16,11 +16,9 @@ CONFIG=\
 
         index index.html index.htm index.nginx-debian.html;
 	server_name _;
+	rewrite ^/redirect_me(.*)$ http://www.google.com/ permanent;
         location / {
                 try_files \$uri \$uri/ =404;
-	}
-	location /redirect_me{
-        	rewrite ^/redirect_me(.*)$ http://www.youtube.com/ permanent;
 	}
 }"
 
@@ -30,8 +28,10 @@ echo -e "$CONFIG" > /etc/nginx/sites-enabled/default
 state=$(pgrep nginx)
 if [ -n "$state" ];
 then
-	sudo service nginx start
-else
 	sudo service nginx restart
+	echo "resarting Nginx...."
+else
+	sudo service nginx start
+	echo "Ngix started.."
 fi
 echo "done"
