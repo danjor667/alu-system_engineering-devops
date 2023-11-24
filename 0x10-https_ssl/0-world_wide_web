@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+# Function to display subdomain information
+
+get_subdomain_info() {
+    domain="$1"
+    subdomain="$2"
+    if [ -z "$subdomain" ]; then
+        subdomain_list=("www" "lb-01" "web-01" "web-02")
+    else
+        subdomain_list=("$subdomain")
+    fi
+
+    for sub in "${subdomain_list[@]}"; do
+        record_type=$(dig +short -t A "$sub.$domain" | awk '{ if (NF) { print "A" } else { print "CNAME" } }')
+        destination=$(dig +short "$sub.$domain" | tr '\n' ',' | sed 's/,$//')
+        echo "The subdomain $sub is a $record_type record and points to $destination"
+    done
+}
+
+# Check if both domain and subdomain arguments are provided
+if [ $# -eq 2 ]; then
+    domain="$1"
+    subdomain="$2"
+    get_subdomain_info "$domain" "$subdomain"
+elif [ $# -eq 1 ]; then
+    domain="$1"
+    get_subdomain_info "$domain"
+else
+    echo "Usage: $0 <domain> [<subdomain>]"
+fi
